@@ -5,19 +5,17 @@ require_once 'theme.php';
 
 $currentTheme = getCurrentTheme();
 
-// Check if user is logged in
+// Check if admin is logged in
 if (!isset($_SESSION['admin_logged_in'])) {
     header('Location: login.php');
     exit();
 }
+
 // Get stats for dashboard
 $users_count = $conn->query("SELECT COUNT(*) FROM users")->fetch_row()[0];
 $movies_count = $conn->query("SELECT COUNT(*) FROM movies")->fetch_row()[0];
 $recent_users = $conn->query("SELECT username, email, created_at FROM users ORDER BY created_at DESC LIMIT 5")->fetch_all(MYSQLI_ASSOC);
-
-// Use the correct column name 'uploaded_at' instead of 'created_at'
 $recent_movies = $conn->query("SELECT title, views, uploaded_at FROM movies ORDER BY uploaded_at DESC LIMIT 5")->fetch_all(MYSQLI_ASSOC);
-
 ?>
 
 <!DOCTYPE html>
@@ -80,10 +78,10 @@ $recent_movies = $conn->query("SELECT title, views, uploaded_at FROM movies ORDE
                     </a>
                 </li>
                 <li>
-                    <a href="logout.php">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Logout</span>
-                    </a>
+                <a href="logout.php" id="logout-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
                 </li>
             </ul>
         </nav>
@@ -204,7 +202,7 @@ $recent_movies = $conn->query("SELECT title, views, uploaded_at FROM movies ORDE
                                 <tr>
                                     <td><?php echo htmlspecialchars($movie['title']); ?></td>
                                     <td><?php echo $movie['views']; ?></td>
-                                    <td><?php echo date('M d, Y', strtotime($movie['created_at'])); ?></td>
+                                    <td><?php echo date('M d, Y', strtotime($movie['uploaded_at'])); ?></td>
                                     <td>
                                         <a href="#" class="btn btn-sm btn-info">View</a>
                                     </td>
